@@ -1,3 +1,4 @@
+/* eslint-disable promise/always-return */
 /* eslint global-require: off, no-console: off */
 
 /**
@@ -15,6 +16,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import handlers from './backend/handler';
 
 export default class AppUpdater {
   constructor() {
@@ -123,7 +125,13 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.whenReady().then(createWindow).catch(console.log);
+app
+  .whenReady()
+  .then(() => {
+    createWindow();
+    handlers();
+  })
+  .catch(console.log);
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
